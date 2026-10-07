@@ -36,6 +36,8 @@ pip-delete-this-directory.txt
 # Database
 # ──────────────────────────────────────────────
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
 *.sqlite3
 

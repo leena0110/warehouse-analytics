@@ -25,7 +25,7 @@ class Warehouse(Base):
 
     # Relationships
     slots = relationship("Slot", back_populates="warehouse", cascade="all, delete-orphan")
-    datasets = relationship("Dataset", back_populates="warehouse")
+    datasets = relationship("Dataset", back_populates="warehouse", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Warehouse {self.warehouse_id}>"
@@ -50,7 +50,7 @@ class Slot(Base):
     occupancy = Column(Float, default=0.0)       # current occupancy units
     blocked_reason = Column(String(256), nullable=True)
     last_updated = Column(DateTime, nullable=True)
-    dataset_id = Column(Integer, ForeignKey("datasets.id", ondelete="SET NULL"), nullable=True)
+    dataset_id = Column(Integer, ForeignKey("datasets.id"), nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Relationships

@@ -213,6 +213,9 @@ async def delete_dataset(
     if dataset.blob_name:
         await delete_blob(dataset.blob_name)
 
+    # Disassociate slots from deleted dataset (application-level SET NULL)
+    db.query(Slot).filter(Slot.dataset_id == dataset_id).update({Slot.dataset_id: None})
+
     db.delete(dataset)
     db.commit()
     log_event("dataset_deleted", current_user.username, f"dataset_id={dataset_id}")

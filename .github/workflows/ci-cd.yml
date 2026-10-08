@@ -96,7 +96,8 @@ jobs:
       - name: Post-deploy health check
         run: |
           sleep 30
-          curl -f https://${{ env.APP_NAME }}.azurewebsites.net/api/monitoring/health \
+          curl -f https://warehouse-analytics-hecae8bufqcvf9am.centralindia-01.azurewebsites.net/api/monitoring/health \
+            || curl -f https://${{ env.APP_NAME }}.azurewebsites.net/api/monitoring/health \
             || echo "Health check failed — app may need a moment to start."
 
 # ── Required GitHub Secrets ────────────────────────────────────────────────────

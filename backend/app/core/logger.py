@@ -57,6 +57,12 @@ if settings.is_appinsights_enabled:
         # ── Log handler: sends all logger.* calls to App Insights Traces table ──
         _conn_str = settings.azure_appinsights_connection_string
         _azure_log_handler = AzureLogHandler(connection_string=_conn_str)
+        # Python 3.13 compatibility: Python 3.13 logging.Handler.handle requires self.lock
+        # to be a context manager (threading.RLock). opencensus AzureLogHandler defaults
+        # self.lock to None and sets self.lock = None in createLock(). We provide a real RLock.
+        import threading
+        _azure_log_handler.lock = threading.RLock()
+        _azure_log_handler.createLock = lambda: setattr(_azure_log_handler, "lock", threading.RLock())
         logger.addHandler(_azure_log_handler)
 
         # ── Trace exporter: used by request middleware to send HTTP spans ───────
@@ -77,6 +83,13 @@ if settings.is_appinsights_enabled:
             "Install with: pip install opencensus-ext-azure"
         )
     except Exception as exc:
+        if "_azure_log_handler" in locals():
+            try:
+                logger.removeHandler(_azure_log_handler)
+            except Exception:
+                pass
+        _appinsights_initialized = False
+        _azure_exporter = None
         logger.warning(
             f"Application Insights initialization failed ({type(exc).__name__}): {exc}. "
             "Continuing without telemetry."

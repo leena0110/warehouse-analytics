@@ -194,7 +194,7 @@ push to main → Test (53 tests) → Bandit Security Scan → Deploy to Azure
 - [`backend/app/core/logger.py`](backend/app/core/logger.py) — `AzureLogHandler` + `AzureExporter` init, `is_appinsights_active()`
 - [`backend/app/main.py`](backend/app/main.py) — request tracing middleware, `logger.exception()` for errors
 - [`backend/app/api/monitoring.py`](backend/app/api/monitoring.py) — metrics endpoint
-- [`backend/tests/test_telemetry.py`](backend/tests/test_telemetry.py) — 24 dedicated telemetry tests
+- [`backend/tests/test_telemetry.py`](backend/tests/test_telemetry.py) — 25 dedicated telemetry tests (including Python 3.13 lock compatibility)
 - [`README.md`](README.md) — §18
 
 ---

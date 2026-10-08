@@ -161,6 +161,30 @@ class TestAppInsightsModuleState:
         assert initialized is False
         assert exporter is None
 
+    def test_azure_log_handler_python_313_lock_compatibility(self):
+        """
+        Verify that AzureLogHandler lock is compatible with Python 3.13 logging.Handler.
+        In Python 3.13, logging.Handler.handle() calls 'with self.lock:' which requires
+        lock to be a context manager (threading.RLock), not None.
+        """
+        import threading
+        try:
+            from opencensus.ext.azure.log_exporter import AzureLogHandler
+            handler = AzureLogHandler(connection_string="InstrumentationKey=00000000-0000-0000-0000-000000000000")
+            # In Python 3.13 opencensus defaults lock to None; verify our patch pattern gives a real RLock
+            handler.lock = threading.RLock()
+            handler.createLock = lambda: setattr(handler, "lock", threading.RLock())
+
+            test_logger = logging.getLogger("test_py313_lock")
+            test_logger.addHandler(handler)
+            try:
+                # Must not raise TypeError: 'NoneType' object does not support context manager
+                test_logger.info("Test message for Python 3.13 lock verification")
+            finally:
+                test_logger.removeHandler(handler)
+        except ImportError:
+            pytest.skip("opencensus-ext-azure not installed in this environment")
+
 
 # ── Monitoring endpoint tests ─────────────────────────────────────────────────
 

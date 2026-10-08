@@ -15,7 +15,7 @@ This document maps every rubric criterion to its specific implementation evidenc
 | 4 | Security & Access Control | 2 | bcrypt password hashing, JWT (HS256) tokens, RBAC with ADMIN/WAREHOUSE_MANAGER, 403 enforcement on every protected route, CORS, .gitignore, .env.example | `app/core/security.py`, `app/api/auth.py`, `.gitignore` | Log in as manager → try to access Upload → get 403; show security.py |
 | 5 | Database & Data Management | 2 | 6-table normalized schema with FK constraints + indexes, full CRUD via SQLAlchemy ORM, slot bulk insert, paginated queries, persistent analysis runs | `app/models/`, `app/api/datasets.py` | Show SQLite file after demo; open /api/docs and demonstrate CRUD |
 | 6 | Deployment & DevOps | 2 | GitHub Actions CI/CD (test→lint→deploy), Azure App Service deployment configuration, `.env.example`, Procfile, startup.py, Azure CLI commands in README | `.github/workflows/ci-cd.yml`, `backend/Procfile`, `README.md` §16 | Show workflow file; walk through deploy steps; show GitHub Actions run |
-| 7 | Monitoring, Performance & Optimization | 1 | Request logging middleware (all requests/responses logged), `/api/monitoring/metrics` endpoint, Azure App Insights hook, 5 documented optimizations (indexes, bulk insert, WAL, pagination, LRU cache) | `app/core/logger.py`, `app/api/monitoring.py`, `README.md` §18 | Open Monitoring view; show warehouse_app.log; explain bulk insert vs loop |
+| 7 | Monitoring, Performance & Optimization | 1 | Request logging middleware (all requests/responses logged), `/api/monitoring/metrics` endpoint, **genuine Azure App Insights telemetry** (Traces + Requests + Exceptions tables via opencensus-ext-azure), `is_appinsights_active()` reflects actual init state, 5 documented optimizations (indexes, bulk insert, WAL, pagination, LRU cache) | `app/core/logger.py`, `app/main.py`, `app/api/monitoring.py`, `README.md` §18 | Open Monitoring view; confirm `appinsights_active: true`; show App Insights → Requests blade for live HTTP spans |
 | 8 | Documentation & Presentation | 2 | 22-section README, architecture diagram (ASCII + visual in UI), API table, schema diagram, setup guide, demo flow, limitations, RUBRIC_MAPPING.md | `README.md`, `RUBRIC_MAPPING.md` | Show README; walk through demo procedure in §20 |
 | 9 | Innovation & Problem Solving | 1 | Genuine scikit-learn LinearRegression forecast (7-day), rule-based recommendation engine (P1–P4 priority system), operational keyword classifier — all clearly documented | `app/services/ml_service.py`, forecast view, `README.md` §18 | Run analysis → open AI Forecast → show 7-day chart; open ml_service.py |
 
@@ -163,24 +163,38 @@ push to main → Test (53 tests) → Bandit Security Scan → Deploy to Azure
 
 ### 7. Monitoring, Performance & Optimization (1 mark)
 
-**Monitoring:**
-- Structured logging to file + console (`app/core/logger.py`)
-- Azure App Insights hook (activates when connection string provided)
-- `/api/monitoring/health` — public endpoint for uptime checks
-- `/api/monitoring/metrics` — authenticated endpoint for full metrics
+**Monitoring — Three genuine telemetry streams to Azure Application Insights:**
+
+| Stream | App Insights Table | Implementation |
+|--------|--------------------|----------------|
+| Application logs (`logger.info/warning/error/exception`) | **Traces** | `AzureLogHandler` attached in `logger.py` |
+| HTTP request spans (method, path, status, duration) | **Requests** | `AzureExporter` + per-request `Tracer` in `main.py` middleware |
+| Unhandled exception stack traces | **Exceptions** | `logger.exception()` in middleware error handler |
+
+**`appinsights_active` accuracy fix:**
+- `/api/monitoring/metrics` now uses `is_appinsights_active()` from `logger.py`
+- Returns `True` **only** if `AzureLogHandler` was successfully attached at startup
+- Returns `False` if: connection string missing, `opencensus-ext-azure` not installed, or handler init failed
+- Previously just checked `bool(env_var)` — could report active when telemetry was broken
+
+**Local dev behavior:**
+- When `AZURE_APPINSIGHTS_CONNECTION_STRING` is not set: logs go to console + file only
+- No code changes needed to switch between local and production telemetry modes
 
 **Logged events:** login, logout, upload_start, upload_success, analysis_start, analysis_complete, blob_upload_success, authz_failure, login_failed, password_changed, warehouse_created/deleted, report_created/resolved
 
 **Performance optimizations (5 documented):**
-1. Composite DB indexes (warehouse_id + zone/status)
-2. Bulk slot insert vs row-by-row
+1. Composite DB indexes (`warehouse_id + zone`, `warehouse_id + status`)
+2. Bulk slot insert via `bulk_save_objects()` vs row-by-row
 3. SQLite WAL mode for concurrent reads
-4. Paginated slot queries (page, page_size params)
-5. LRU-cached settings singleton
+4. Paginated slot queries (`page`, `page_size` params)
+5. LRU-cached settings singleton (`@lru_cache`)
 
 **Files:**
-- [`backend/app/core/logger.py`](backend/app/core/logger.py)
-- [`backend/app/api/monitoring.py`](backend/app/api/monitoring.py)
+- [`backend/app/core/logger.py`](backend/app/core/logger.py) — `AzureLogHandler` + `AzureExporter` init, `is_appinsights_active()`
+- [`backend/app/main.py`](backend/app/main.py) — request tracing middleware, `logger.exception()` for errors
+- [`backend/app/api/monitoring.py`](backend/app/api/monitoring.py) — metrics endpoint
+- [`backend/tests/test_telemetry.py`](backend/tests/test_telemetry.py) — 24 dedicated telemetry tests
 - [`README.md`](README.md) — §18
 
 ---
@@ -233,7 +247,7 @@ The technical challenge: warehouse utilization data has temporal patterns but li
 | ✅ Architecture | Documented + visual |
 | ✅ Scalability | Azure App Service + SQL |
 | ✅ Reliability | Error handling, graceful fallbacks |
-| ✅ Working functionality | 53 tests pass, live demo works |
+| ✅ Working functionality | 92 tests pass, live demo works |
 | ✅ Authentication | JWT + bcrypt |
 | ✅ Authorization | RBAC on all routes |
 | ✅ Access control | Admin vs Manager enforced |

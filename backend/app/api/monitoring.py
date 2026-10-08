@@ -10,12 +10,14 @@ from sqlalchemy.orm import Session
 
 from app.core.security import get_db, require_manager_or_admin
 from app.core.config import get_settings
+from app.core.logger import is_appinsights_active
 from app.models.user import User
 from app.models.dataset import Dataset, AnalysisRun
 from app.models.warehouse import Warehouse
 
 router = APIRouter(prefix="/api/monitoring", tags=["Monitoring"])
 settings = get_settings()
+
 
 # Track server start time for uptime calculation
 _START_TIME = time.time()
@@ -113,7 +115,7 @@ def get_metrics(
         "memory_percent": memory_percent,
         "environment": settings.app_env,
         "azure_storage_active": settings.is_azure_storage_enabled,
-        "appinsights_active": settings.is_appinsights_enabled,
+        "appinsights_active": is_appinsights_active(),
         "database_type": "azure_sql" if "mssql" in settings.database_url else "sqlite_local",
         "counts": {
             "warehouses": total_warehouses,

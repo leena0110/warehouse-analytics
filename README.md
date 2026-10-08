@@ -364,22 +364,47 @@ See `docs/logic_app_definition.json` for the ARM template.
 
 ## 15. Monitoring Setup
 
-### Application Insights
-```bash
-az monitor app-insights component create \
-  --app warehouse-insights --location eastus --resource-group wh-rg
+### Azure Application Insights
 
-# Copy Instrumentation String to App Service settings:
+The application uses `opencensus-ext-azure==1.1.13` to send **three telemetry streams** to Azure App Insights:
+
+| Stream | App Insights Table | Trigger |
+|--------|--------------------|---------|
+| Application logs (`INFO`, `WARNING`, `ERROR`, `EXCEPTION`) | **Traces** | Every `logger.*` call via `AzureLogHandler` |
+| HTTP request spans (method, path, status code, duration) | **Requests** | Every inbound HTTP request via middleware `AzureExporter` |
+| Unhandled exception stack traces | **Exceptions** | `logger.exception()` in error handler (full traceback) |
+
+#### Setup (Azure Portal)
+```bash
+# Create Application Insights resource in your resource group:
+az monitor app-insights component create \
+  --app warehouse-appinsights \
+  --location centralindia \
+  --resource-group <your-rg> \
+  --workspace <your-log-analytics-workspace>
+
+# Copy the Connection String from: Overview → Connection String
+# Add as App Service Application Setting (no code deploy needed):
 # AZURE_APPINSIGHTS_CONNECTION_STRING="InstrumentationKey=...;IngestionEndpoint=..."
 ```
 
-### Key Metrics Tracked
-- Request count per endpoint
-- Response time (P50, P95)
-- Authentication failures
-- Dataset upload events
-- Analysis run durations
-- Error rates
+#### How It Works
+- **Environment variable:** `AZURE_APPINSIGHTS_CONNECTION_STRING`
+- **Activation:** Set the variable in App Service → Configuration → Application Settings and restart
+- **`appinsights_active` field:** `/api/monitoring/metrics` reports `true` **only** when
+  `AzureLogHandler` was successfully attached at startup (`is_appinsights_active()`)
+  — not merely when the environment variable is set
+- **Local dev:** When connection string is absent, logs go to console + `warehouse_app.log` only
+- **Graceful fallback:** If `opencensus-ext-azure` is not installed or the connection string
+  is invalid, the application starts normally with local logging
+
+#### Key Telemetry Events Captured
+- Every HTTP request: method, path, status code, latency
+- Login, logout, authentication failures
+- Dataset upload start/success/failure
+- Analysis run start/complete with duration
+- Blob Storage upload events
+- All application exceptions with full stack traces
 
 ---
 

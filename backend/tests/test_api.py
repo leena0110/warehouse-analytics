@@ -148,6 +148,57 @@ def test_analysis_manager_cannot_trigger(client, manager_headers):
     assert response.status_code == 403
 
 
+def test_latest_analysis_zone_stats_nested_in_stats(client, admin_headers, manager_headers):
+    """
+    Regression test: GET /api/analysis/latest/{id} must return zone_stats
+    nested inside stats{}, not at the top level.
+    Fixes: dashboard Zone Utilization chart showing 'No zones'.
+    """
+    # Ensure at least one processed dataset and analysis run exist
+    datasets = client.get("/api/datasets/", headers=manager_headers).json()
+    processed = [d for d in datasets if d["status"] == "PROCESSED"]
+    if not processed:
+        pytest.skip("No processed datasets — run upload test first")
+
+    dataset_id = processed[0]["id"]
+    # Run analysis to guarantee a fresh run exists
+    run_resp = client.post(f"/api/analysis/run/{dataset_id}", headers=admin_headers)
+    assert run_resp.status_code == 201
+
+    # Identify warehouse id
+    warehouses = client.get("/api/warehouses/", headers=manager_headers).json()
+    assert warehouses, "No warehouses found"
+    wh_id = warehouses[0]["id"]
+
+    # Fetch latest analysis
+    resp = client.get(f"/api/analysis/latest/{wh_id}", headers=manager_headers)
+    assert resp.status_code == 200
+    data = resp.json()
+
+    # zone_stats must be nested inside stats, not at top level
+    assert "stats" in data, "Response must contain 'stats' key"
+    stats = data["stats"]
+    assert "zone_stats" in stats, (
+        "stats.zone_stats is missing — zone_stats must be nested inside stats{}, "
+        "not returned at the top level of the response"
+    )
+    assert isinstance(stats["zone_stats"], dict), "stats.zone_stats must be a dict"
+    assert len(stats["zone_stats"]) > 0, "stats.zone_stats must not be empty when zone data exists"
+
+    # Verify zone_stats values have expected shape
+    for zone_name, zone_data in stats["zone_stats"].items():
+        assert isinstance(zone_name, str), "Zone keys must be strings"
+        assert "total" in zone_data, f"Zone {zone_name} missing 'total'"
+        assert "occupied" in zone_data, f"Zone {zone_name} missing 'occupied'"
+        assert "utilization_pct" in zone_data, f"Zone {zone_name} missing 'utilization_pct'"
+        assert 0 <= zone_data["utilization_pct"] <= 100, f"Zone {zone_name} utilization_pct out of range"
+
+    # Verify top-level KPI fields are still in stats
+    for field in ("total_slots", "occupied_slots", "empty_slots", "reserved_slots",
+                  "blocked_slots", "utilization_pct", "available_capacity"):
+        assert field in stats, f"stats.{field} is missing"
+
+
 def test_grid_endpoint_authenticated(client, manager_headers):
     """Grid endpoint accessible by manager, returns grid structure."""
     warehouses = client.get("/api/warehouses/", headers=manager_headers).json()

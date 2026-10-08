@@ -91,7 +91,7 @@ jobs:
         with:
           app-name: ${{ env.APP_NAME }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./backend
+          package: .
 
       - name: Post-deploy health check
         run: |

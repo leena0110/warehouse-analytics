@@ -27,8 +27,14 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     """Startup: initialise DB. Shutdown: cleanup."""
     logger.info(f"Starting {settings.app_name} [{settings.app_env}]")
-    init_db()
-    logger.info("Database initialized.")
+    try:
+        init_db()
+        logger.info("Database initialized successfully.")
+    except Exception as exc:
+        logger.error(
+            f"Database initialization could not complete during startup ({type(exc).__name__}). "
+            "Server will remain online; connections will be established upon database availability."
+        )
     yield
     logger.info("Application shutting down.")
 

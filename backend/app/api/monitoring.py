@@ -24,11 +24,60 @@ _START_TIME = time.time()
 @router.get("/health")
 def health_check():
     """Basic health check — no auth required."""
+    db_type = "azure_sql" if ("mssql" in str(settings.database_url) or settings.sql_server) else "sqlite_local"
     return {
         "status": "healthy",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "app": settings.app_name,
         "env": settings.app_env,
+        "database_type": db_type,
+    }
+
+
+@router.get("/db-diagnostic")
+def db_diagnostic():
+    """
+    Safe database and network diagnostic endpoint — no secrets exposed.
+    Tests TCP connectivity to port 1433 and reports connection status.
+    """
+    import socket
+    from app.models.database import get_safe_db_url, is_mssql
+
+    target_host = settings.sql_server
+    if not target_host and "mssql" in str(settings.database_url):
+        try:
+            proto, rest = str(settings.database_url).split("://", 1)
+            endpoint = rest.rsplit("@", 1)[-1].split("/", 1)[0].split("?")[0]
+            target_host = endpoint.split(":")[0]
+        except Exception:
+            target_host = "warehouseanalytics-sql.database.windows.net"
+
+    tcp_reachable = None
+    tcp_latency_ms = None
+    tcp_error = None
+
+    if is_mssql and target_host:
+        try:
+            t0 = time.time()
+            s = socket.create_connection((target_host, settings.sql_port or 1433), timeout=5.0)
+            tcp_latency_ms = round((time.time() - t0) * 1000, 2)
+            s.close()
+            tcp_reachable = True
+        except Exception as exc:
+            tcp_reachable = False
+            tcp_error = f"{type(exc).__name__}: {str(exc)}"
+
+    return {
+        "database_configured": "azure_sql" if is_mssql else "sqlite_local",
+        "safe_target": get_safe_db_url(),
+        "network_test": {
+            "target_host": target_host if is_mssql else None,
+            "port": (settings.sql_port or 1433) if is_mssql else None,
+            "tcp_reachable": tcp_reachable,
+            "latency_ms": tcp_latency_ms,
+            "error": tcp_error,
+        },
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
 

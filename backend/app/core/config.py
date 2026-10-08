@@ -24,6 +24,15 @@ class Settings(BaseSettings):
     # ── Database ─────────────────────────────────────────────
     # Defaults to local SQLite; override with Azure SQL URL in .env
     database_url: str = "sqlite:///./warehouse.db"
+    sql_server: str = ""
+    sql_database: str = ""
+    sql_user: str = ""
+    sql_password: str = ""
+    sql_port: int = 1433
+    sql_driver: str = "ODBC Driver 18 for SQL Server"
+    sql_encrypt: str = "yes"
+    sql_trust_server_certificate: str = "no"
+    sql_connection_timeout: int = 60
 
     # ── Azure Blob Storage ────────────────────────────────────
     azure_storage_connection_string: str = ""

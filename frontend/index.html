@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WarehouseAI — Slot Utilization Analyzer</title>
-  <meta name="description" content="AI-based warehouse slot utilization analyzer with real-time forecasting, grid visualization, and operational insights." />
+  <title>SlotWise — Warehouse Utilization Analytics</title>
+  <meta name="description" content="Industrial warehouse slot utilization analyzer and digital twin with real-time forecasting, 2D matrix mapping, and operational insights." />
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="/static/css/style.css" />
 </head>
@@ -15,24 +17,58 @@
   <!-- LOGIN PAGE                                                   -->
   <!-- ═══════════════════════════════════════════════════════════ -->
   <div id="login-page" class="page active">
-    <div class="login-bg">
-      <div class="login-card">
-        <div class="login-logo">
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-            <rect width="48" height="48" rx="12" fill="#2563EB"/>
-            <path d="M8 34L24 14L40 34H8Z" fill="white" opacity="0.9"/>
-            <rect x="18" y="26" width="12" height="8" fill="#1D4ED8"/>
-            <circle cx="24" cy="20" r="3" fill="#60A5FA"/>
+    <div class="login-container">
+      <!-- Left Hero/Branding Panel -->
+      <div class="login-brand-panel">
+        <div class="brand-header">
+          <svg width="36" height="36" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="6" fill="#15191E" stroke="#2A3038" stroke-width="1.5"/>
+            <path d="M6 14L16 6L26 14" stroke="#F2F3F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="8" y="15" width="4.5" height="4.5" rx="1" fill="#737B86"/>
+            <rect x="13.75" y="15" width="4.5" height="4.5" rx="1" fill="#F2F3F5"/>
+            <rect x="19.5" y="15" width="4.5" height="4.5" rx="1" fill="#737B86"/>
+            <rect x="8" y="21" width="4.5" height="4.5" rx="1" fill="#F2F3F5"/>
+            <rect x="13.75" y="21" width="4.5" height="4.5" rx="1" fill="#737B86"/>
+            <rect x="19.5" y="21" width="4.5" height="4.5" rx="1" fill="#F2F3F5"/>
           </svg>
           <div>
-            <h1>WarehouseAI</h1>
-            <p>Slot Utilization Analyzer</p>
+            <div class="brand-title">SlotWise</div>
+            <div class="brand-subtitle">Warehouse Utilization Analytics</div>
           </div>
         </div>
 
-        <div class="login-form-section">
-          <h2>Sign In</h2>
-          <p class="login-subtitle">Access your warehouse analytics dashboard</p>
+        <div class="brand-hero">
+          <h2>Monitor capacity.<br>Understand utilization.<br>Plan ahead.</h2>
+          <p>Industrial facility telemetry, 2D digital twin mapping, and operational analytics for enterprise distribution centers.</p>
+
+          <div class="brand-specs">
+            <div class="brand-spec-item">
+              <span class="brand-spec-val">400</span>
+              <span class="brand-spec-lbl">Capacity Slots</span>
+            </div>
+            <div class="brand-spec-item">
+              <span class="brand-spec-val">5</span>
+              <span class="brand-spec-lbl">Active Zones</span>
+            </div>
+            <div class="brand-spec-item">
+              <span class="brand-spec-val">7-Day</span>
+              <span class="brand-spec-lbl">Forecast Model</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="brand-footer">
+          Enterprise Cloud Analytics &bull; Production Release
+        </div>
+      </div>
+
+      <!-- Right Form Panel -->
+      <div class="login-form-panel">
+        <div class="login-card-wrapper">
+          <div class="login-card-header">
+            <h1>Sign In</h1>
+            <p>Access your warehouse operations dashboard</p>
+          </div>
 
           <div id="login-error" class="alert alert-error hidden"></div>
 
@@ -45,19 +81,34 @@
               <label for="login-password">Password</label>
               <div class="password-wrapper">
                 <input type="password" id="login-password" name="password" placeholder="Enter password" required autocomplete="current-password" />
-                <button type="button" id="toggle-pw" class="pw-toggle" aria-label="Toggle password">👁</button>
+                <button type="button" id="toggle-pw" class="pw-toggle" aria-label="Toggle password visibility">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                </button>
               </div>
             </div>
-            <button type="submit" id="login-btn" class="btn btn-primary btn-full">
+            <button type="submit" id="login-btn" class="btn btn-primary btn-full mt-2">
               <span id="login-btn-text">Sign In</span>
               <span id="login-spinner" class="spinner hidden"></span>
             </button>
           </form>
 
-          <div class="demo-creds">
-            <p><strong>Demo Credentials:</strong></p>
-            <p>Admin: <code>admin</code> / <code>Admin@123</code></p>
-            <p>Manager: <code>manager</code> / <code>Manager@123</code></p>
+          <div class="demo-creds-box">
+            <div style="font-weight:600;color:var(--text-secondary);margin-bottom:0.5rem;font-size:0.75rem;letter-spacing:0.05em;text-transform:uppercase;">Demo Credentials</div>
+            <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;">
+              <button type="button" class="btn btn-secondary btn-sm" style="flex:1;font-size:0.75rem;padding:0.35rem 0.5rem;" onclick="document.getElementById('login-username').value='admin';document.getElementById('login-password').value='Admin@123';">
+                Admin
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" style="flex:1;font-size:0.75rem;padding:0.35rem 0.5rem;" onclick="document.getElementById('login-username').value='manager';document.getElementById('login-password').value='Manager@123';">
+                Warehouse Manager
+              </button>
+            </div>
+            <div style="font-size:0.72rem;color:var(--text-muted);display:flex;justify-content:space-between;">
+              <span>admin / Admin@123</span>
+              <span>manager / Manager@123</span>
+            </div>
           </div>
         </div>
       </div>
@@ -65,43 +116,78 @@
   </div>
 
   <!-- ═══════════════════════════════════════════════════════════ -->
-  <!-- MAIN APP                                                     -->
+  <!-- MAIN APPLICATION SHELL                                        -->
   <!-- ═══════════════════════════════════════════════════════════ -->
   <div id="app-page" class="page hidden">
     <!-- Sidebar -->
     <nav id="sidebar" class="sidebar">
       <div class="sidebar-header">
-        <svg width="32" height="32" viewBox="0 0 48 48" fill="none">
-          <rect width="48" height="48" rx="12" fill="#2563EB"/>
-          <path d="M8 34L24 14L40 34H8Z" fill="white" opacity="0.9"/>
-          <rect x="18" y="26" width="12" height="8" fill="#1D4ED8"/>
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="5" fill="#15191E" stroke="#2A3038" stroke-width="1.5"/>
+          <path d="M6 14L16 6L26 14" stroke="#F2F3F5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="8" y="15" width="4.5" height="4.5" rx="1" fill="#737B86"/>
+          <rect x="13.75" y="15" width="4.5" height="4.5" rx="1" fill="#F2F3F5"/>
+          <rect x="19.5" y="15" width="4.5" height="4.5" rx="1" fill="#737B86"/>
+          <rect x="8" y="21" width="4.5" height="4.5" rx="1" fill="#F2F3F5"/>
+          <rect x="13.75" y="21" width="4.5" height="4.5" rx="1" fill="#737B86"/>
+          <rect x="19.5" y="21" width="4.5" height="4.5" rx="1" fill="#F2F3F5"/>
         </svg>
-        <span>WarehouseAI</span>
+        <div>
+          <div class="sidebar-brand-name">SlotWise</div>
+          <div class="sidebar-brand-sub">Warehouse Analytics</div>
+        </div>
       </div>
 
-      <ul class="sidebar-nav">
-        <li><button class="nav-btn active" data-view="dashboard" id="nav-dashboard">
-          <span class="nav-icon">📊</span> Dashboard
-        </button></li>
-        <li><button class="nav-btn" data-view="grid" id="nav-grid">
-          <span class="nav-icon">🗂</span> Warehouse Grid
-        </button></li>
-        <li><button class="nav-btn" data-view="forecast" id="nav-forecast">
-          <span class="nav-icon">🤖</span> AI Forecast
-        </button></li>
-        <li><button class="nav-btn" data-view="reports" id="nav-reports">
-          <span class="nav-icon">📋</span> Op. Reports
-        </button></li>
-        <li id="nav-upload-li" class="admin-only hidden"><button class="nav-btn" data-view="upload" id="nav-upload">
-          <span class="nav-icon">⬆</span> Upload Data
-        </button></li>
-        <li id="nav-admin-li" class="admin-only hidden"><button class="nav-btn" data-view="admin" id="nav-admin">
-          <span class="nav-icon">⚙</span> Admin
-        </button></li>
-        <li><button class="nav-btn" data-view="monitoring" id="nav-monitoring">
-          <span class="nav-icon">📡</span> Monitoring
-        </button></li>
-      </ul>
+      <div class="sidebar-nav-container">
+        <ul class="sidebar-nav">
+          <li>
+            <button class="nav-btn active" data-view="dashboard" id="nav-dashboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+              <span>Dashboard</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-view="grid" id="nav-grid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+              <span>Warehouse Grid</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-view="forecast" id="nav-forecast">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              <span>Forecast</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-view="reports" id="nav-reports">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+              <span>Reports</span>
+            </button>
+          </li>
+          <li id="nav-upload-li" class="admin-only hidden">
+            <button class="nav-btn" data-view="upload" id="nav-upload">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+              <span>Upload Data</span>
+            </button>
+          </li>
+        </ul>
+
+        <div class="nav-section-label">MANAGEMENT</div>
+        <ul class="sidebar-nav">
+          <li id="nav-admin-li" class="admin-only hidden">
+            <button class="nav-btn" data-view="admin" id="nav-admin">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+              <span>Admin</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-btn" data-view="monitoring" id="nav-monitoring">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              <span>Monitoring</span>
+            </button>
+          </li>
+        </ul>
+      </div>
 
       <div class="sidebar-footer">
         <div class="user-info" id="user-info-sidebar">
@@ -111,16 +197,22 @@
             <div id="sidebar-role" class="user-role">—</div>
           </div>
         </div>
-        <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+        <button id="logout-btn" class="btn btn-ghost btn-sm" aria-label="Sign out">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/>
+          </svg>
+        </button>
       </div>
     </nav>
 
-    <!-- Main content -->
+    <!-- Main Content Area -->
     <main id="main-content" class="main-content">
-      <!-- Top bar -->
+      <!-- Top Bar -->
       <header class="topbar">
         <div class="topbar-left">
-          <button id="sidebar-toggle" class="btn btn-ghost" aria-label="Toggle sidebar">☰</button>
+          <button id="sidebar-toggle" aria-label="Toggle sidebar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+          </button>
           <h2 id="page-title">Dashboard</h2>
         </div>
         <div class="topbar-right">
@@ -132,100 +224,130 @@
         </div>
       </header>
 
-      <!-- Views -->
+      <!-- View Container -->
       <div id="view-container" class="view-container">
 
-        <!-- ── DASHBOARD ── -->
+        <!-- ── 1. DASHBOARD VIEW ── -->
         <section id="view-dashboard" class="view active">
           <div id="dashboard-alert" class="alert hidden"></div>
 
-          <!-- KPI cards -->
+          <!-- Facility Overview Header -->
+          <div class="overview-banner">
+            <div>
+              <div class="overview-title" id="overview-wh-name">Warehouse Overview &mdash; Main Distribution Center</div>
+              <div class="overview-facility">Facility Identifier: WH-001 &bull; Active Operations</div>
+            </div>
+            <div class="overview-meta" id="overview-timestamp">Last analysis: Synced</div>
+          </div>
+
+          <!-- Structured KPI Row -->
           <div class="kpi-grid" id="kpi-grid">
             <div class="kpi-card" id="kpi-total">
-              <div class="kpi-icon">📦</div>
-              <div class="kpi-value" id="kpi-total-val">—</div>
-              <div class="kpi-label">Total Slots</div>
+              <span class="kpi-label">Total Slots</span>
+              <span class="kpi-value" id="kpi-total-val">—</span>
+              <span class="kpi-sub">Facility capacity</span>
             </div>
             <div class="kpi-card kpi-occupied" id="kpi-occ">
-              <div class="kpi-icon">🔴</div>
-              <div class="kpi-value" id="kpi-occ-val">—</div>
-              <div class="kpi-label">Occupied</div>
+              <span class="kpi-label">Occupied</span>
+              <span class="kpi-value" id="kpi-occ-val">—</span>
+              <span class="kpi-sub">Active cargo</span>
             </div>
             <div class="kpi-card kpi-empty" id="kpi-emp">
-              <div class="kpi-icon">🟢</div>
-              <div class="kpi-value" id="kpi-emp-val">—</div>
-              <div class="kpi-label">Empty</div>
+              <span class="kpi-label">Empty</span>
+              <span class="kpi-value" id="kpi-emp-val">—</span>
+              <span class="kpi-sub">Ready for intake</span>
             </div>
-            <div class="kpi-card kpi-reserved">
-              <div class="kpi-icon">🟡</div>
-              <div class="kpi-value" id="kpi-res-val">—</div>
-              <div class="kpi-label">Reserved</div>
+            <div class="kpi-card kpi-reserved" id="kpi-res">
+              <span class="kpi-label">Reserved</span>
+              <span class="kpi-value" id="kpi-res-val">—</span>
+              <span class="kpi-sub">Staged / held</span>
             </div>
-            <div class="kpi-card kpi-blocked">
-              <div class="kpi-icon">⛔</div>
-              <div class="kpi-value" id="kpi-blk-val">—</div>
-              <div class="kpi-label">Blocked</div>
+            <div class="kpi-card kpi-blocked" id="kpi-blk">
+              <span class="kpi-label">Blocked</span>
+              <span class="kpi-value" id="kpi-blk-val">—</span>
+              <span class="kpi-sub">Maintenance / hold</span>
             </div>
-            <div class="kpi-card kpi-utilization">
-              <div class="kpi-icon">📈</div>
-              <div class="kpi-value" id="kpi-util-val">—</div>
-              <div class="kpi-label">Utilization %</div>
+            <div class="kpi-card kpi-utilization" id="kpi-util">
+              <span class="kpi-label">Utilization</span>
+              <span class="kpi-value" id="kpi-util-val">—</span>
+              <span class="kpi-sub">Current fill rate</span>
             </div>
-            <div class="kpi-card kpi-capacity">
-              <div class="kpi-icon">🏗</div>
-              <div class="kpi-value" id="kpi-cap-val">—</div>
-              <div class="kpi-label">Available Cap.</div>
+            <div class="kpi-card kpi-capacity" id="kpi-cap">
+              <span class="kpi-label">Available Cap.</span>
+              <span class="kpi-value" id="kpi-cap-val">—</span>
+              <span class="kpi-sub">Remaining units</span>
             </div>
             <div class="kpi-card" id="kpi-risk-card">
-              <div class="kpi-icon">⚠</div>
-              <div class="kpi-value" id="kpi-risk-val">—</div>
-              <div class="kpi-label">Risk Level</div>
+              <span class="kpi-label">Risk Level</span>
+              <span class="kpi-value" id="kpi-risk-val">—</span>
+              <span class="kpi-sub">Operational status</span>
             </div>
           </div>
 
-          <!-- Utilization gauge + Distribution chart -->
+          <!-- Analytics Charts Grid -->
           <div class="chart-row">
             <div class="card chart-card">
-              <div class="card-header"><h3>Utilization</h3></div>
+              <div class="card-header"><h3>Utilization Gauge</h3></div>
               <div class="gauge-container">
-                <canvas id="gauge-chart" width="220" height="220"></canvas>
+                <canvas id="gauge-chart" width="200" height="200"></canvas>
                 <div class="gauge-label" id="gauge-label">—%</div>
               </div>
             </div>
-            <div class="card chart-card chart-card-wide">
+            <div class="card chart-card">
               <div class="card-header"><h3>Slot Distribution</h3></div>
-              <canvas id="distribution-chart" height="220"></canvas>
+              <canvas id="distribution-chart" height="200"></canvas>
             </div>
-            <div class="card chart-card chart-card-wide">
+            <div class="card chart-card">
               <div class="card-header"><h3>Zone Utilization</h3></div>
-              <canvas id="zone-chart" height="220"></canvas>
+              <canvas id="zone-chart" height="200"></canvas>
             </div>
           </div>
 
           <!-- Recommendations -->
           <div class="card">
-            <div class="card-header"><h3>💡 Recommendations</h3><span id="rec-count" class="badge badge-sm"></span></div>
+            <div class="card-header">
+              <h3>Operational Recommendations</h3>
+              <span id="rec-count" class="badge badge-sm"></span>
+            </div>
             <div id="recommendations-list" class="recommendations-list">
-              <div class="empty-state">Select a warehouse and run analysis to see recommendations.</div>
+              <div class="empty-state text-muted">Select a warehouse and run analysis to inspect recommendations.</div>
             </div>
           </div>
 
-          <!-- Recent analysis runs -->
+          <!-- Recent Analysis Runs -->
           <div class="card">
-            <div class="card-header"><h3>Recent Analysis Runs</h3></div>
+            <div class="card-header">
+              <h3>Recent Analysis Runs</h3>
+            </div>
             <div id="analysis-history-table" class="table-container">
-              <div class="empty-state">No analysis runs yet.</div>
+              <div class="empty-state text-muted">No analysis runs recorded.</div>
             </div>
           </div>
         </section>
 
-        <!-- ── WAREHOUSE GRID ── -->
+        <!-- ── 2. LIVE 2D DIGITAL TWIN (WAREHOUSE GRID) ── -->
         <section id="view-grid" class="view hidden">
-          <div class="card">
-            <div class="card-header">
-              <h3>Warehouse Grid — Digital Twin</h3>
-              <div class="grid-controls">
-                <select id="grid-zone-filter" class="select-input select-sm">
+          <div class="digital-twin-panel">
+            <div class="dt-header">
+              <div class="dt-title-block">
+                <h3>Live 2D Digital Twin</h3>
+                <p>Interactive real-time map of warehouse slots. Hover over any slot to inspect specific operational data.</p>
+              </div>
+            </div>
+
+            <!-- Controls bar: Zone tabs on left, filters/refresh on right -->
+            <div class="dt-controls-bar">
+              <!-- Zone tabs: Zone 1 (A) through Zone 5 (E) -->
+              <div class="zone-tabs-group" id="zone-tabs">
+                <button type="button" class="zone-tab-btn active" data-zone-idx="0" data-zone-code="A">Zone 1</button>
+                <button type="button" class="zone-tab-btn" data-zone-idx="1" data-zone-code="B">Zone 2</button>
+                <button type="button" class="zone-tab-btn" data-zone-idx="2" data-zone-code="C">Zone 3</button>
+                <button type="button" class="zone-tab-btn" data-zone-idx="3" data-zone-code="D">Zone 4</button>
+                <button type="button" class="zone-tab-btn" data-zone-idx="4" data-zone-code="E">Zone 5</button>
+              </div>
+
+              <div class="dt-filters">
+                <select id="grid-zone-filter" class="select-input select-sm hidden" aria-hidden="true">
                   <option value="">All Zones</option>
                 </select>
                 <select id="grid-status-filter" class="select-input select-sm">
@@ -235,90 +357,173 @@
                   <option value="RESERVED">Reserved</option>
                   <option value="BLOCKED">Blocked</option>
                 </select>
-                <button id="grid-refresh-btn" class="btn btn-sm btn-secondary">Refresh</button>
+                <button id="grid-refresh-btn" class="btn btn-secondary btn-sm">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+                  </svg>
+                  <span>Refresh</span>
+                </button>
               </div>
             </div>
-            <div class="grid-legend">
-              <span class="legend-item"><span class="legend-dot status-occupied"></span>Occupied</span>
-              <span class="legend-item"><span class="legend-dot status-empty"></span>Empty</span>
-              <span class="legend-item"><span class="legend-dot status-reserved"></span>Reserved</span>
-              <span class="legend-item"><span class="legend-dot status-blocked"></span>Blocked</span>
-            </div>
-            <div id="warehouse-grid" class="warehouse-grid">
-              <div class="empty-state">Select a warehouse to view the grid.</div>
+
+            <!-- Two-Column Digital Twin Canvas -->
+            <div class="dt-layout">
+              <!-- Left: 8 x 10 Slot Matrix -->
+              <div class="dt-grid-canvas-card">
+                <div class="dt-grid-info-bar">
+                  <span id="dt-active-zone-title">Active: Zone 1 (A) &bull; 80 Slots (8 &times; 10)</span>
+                  <span id="dt-active-zone-stats" class="mono">Total facility: 400 slots</span>
+                </div>
+                <div id="warehouse-grid" class="warehouse-grid">
+                  <div class="empty-state text-muted">Select a warehouse to initialize the 2D digital twin.</div>
+                </div>
+              </div>
+
+              <!-- Right: Legend + Slot Inspector -->
+              <div class="dt-sidebar-panel">
+                <!-- Legend -->
+                <div class="dt-legend-card">
+                  <div class="dt-legend-title">Legend</div>
+                  <div class="legend-list">
+                    <div class="legend-row">
+                      <span class="legend-swatch"><span class="legend-box empty"></span> Empty</span>
+                      <span id="legend-count-empty" class="mono text-muted">&mdash;</span>
+                    </div>
+                    <div class="legend-row">
+                      <span class="legend-swatch"><span class="legend-box occupied"></span> Occupied</span>
+                      <span id="legend-count-occupied" class="mono text-muted">&mdash;</span>
+                    </div>
+                    <div class="legend-row">
+                      <span class="legend-swatch"><span class="legend-box reserved"></span> Reserved</span>
+                      <span id="legend-count-reserved" class="mono text-muted">&mdash;</span>
+                    </div>
+                    <div class="legend-row">
+                      <span class="legend-swatch"><span class="legend-box blocked"></span> Blocked</span>
+                      <span id="legend-count-blocked" class="mono text-muted">&mdash;</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Slot Inspector -->
+                <div class="dt-inspector-card" id="slot-inspector">
+                  <div class="inspector-header">
+                    <span class="inspector-title">Slot Inspector</span>
+                    <span id="inspector-status-badge" class="badge badge-sm hidden"></span>
+                  </div>
+                  <div id="inspector-placeholder" class="inspector-empty-state">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <rect width="18" height="18" x="3" y="3" rx="2"/>
+                      <path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/>
+                    </svg>
+                    <span>Hover over a slot to inspect details.</span>
+                  </div>
+                  <div id="inspector-details" class="inspector-content hidden">
+                    <div class="inspector-field">
+                      <span class="inspector-field-name">Slot ID</span>
+                      <span class="inspector-field-value" id="insp-slot-id">&mdash;</span>
+                    </div>
+                    <div class="inspector-field">
+                      <span class="inspector-field-name">Zone</span>
+                      <span class="inspector-field-value" id="insp-zone">&mdash;</span>
+                    </div>
+                    <div class="inspector-field">
+                      <span class="inspector-field-name">Position</span>
+                      <span class="inspector-field-value" id="insp-pos">&mdash;</span>
+                    </div>
+                    <div class="inspector-field">
+                      <span class="inspector-field-name">Status</span>
+                      <span class="inspector-field-value" id="insp-status">&mdash;</span>
+                    </div>
+                    <div class="inspector-field">
+                      <span class="inspector-field-name">Capacity</span>
+                      <span class="inspector-field-value" id="insp-capacity">&mdash;</span>
+                    </div>
+                    <div class="inspector-field">
+                      <span class="inspector-field-name">Occupancy</span>
+                      <span class="inspector-field-value" id="insp-occupancy">&mdash;</span>
+                    </div>
+                    <div class="inspector-field" id="insp-reason-row">
+                      <span class="inspector-field-name">Reason</span>
+                      <span class="inspector-field-value" id="insp-reason">&mdash;</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        <!-- ── AI FORECAST ── -->
+        <!-- ── 3. FORECAST VIEW ── -->
         <section id="view-forecast" class="view hidden">
           <div class="forecast-banner" id="risk-banner">
-            <div class="risk-icon" id="risk-icon">⚠</div>
             <div>
-              <div class="risk-title" id="risk-title">Risk Level</div>
-              <div class="risk-detail" id="risk-detail">Run an analysis first.</div>
+              <div class="risk-title" id="risk-title">Risk Assessment: &mdash;</div>
+              <div class="risk-detail" id="risk-detail">Execute an analysis run to calculate forward demand.</div>
             </div>
+            <div id="risk-icon" class="badge">EVALUATING</div>
           </div>
 
-          <div class="chart-row">
-            <div class="card" style="flex:2">
+          <div class="chart-row" style="grid-template-columns: 2fr 1fr;">
+            <div class="card" style="margin-bottom:0">
               <div class="card-header">
                 <h3>7-Day Utilization Forecast</h3>
-                <span id="forecast-method-badge" class="badge badge-sm badge-info"></span>
+                <span id="forecast-method-badge" class="badge badge-sm"></span>
               </div>
-              <canvas id="forecast-chart" height="260"></canvas>
+              <canvas id="forecast-chart" height="240"></canvas>
             </div>
-            <div class="card" style="flex:1">
-              <div class="card-header"><h3>Forecast Table</h3></div>
+            <div class="card" style="margin-bottom:0">
+              <div class="card-header"><h3>Forecast Horizon</h3></div>
               <div id="forecast-table" class="table-container"></div>
             </div>
           </div>
 
-          <div class="card">
-            <div class="card-header"><h3>ℹ Model Information</h3></div>
+          <div class="card mt-4">
+            <div class="card-header"><h3>Model &amp; Forecasting Architecture</h3></div>
             <div id="forecast-model-notes" class="model-notes">
-              <p>No forecast available. Select a warehouse and run an analysis to generate predictions.</p>
+              <p class="text-muted">No forecast generated. Select a warehouse and execute an analysis run to compute forward utilization trajectories.</p>
             </div>
           </div>
         </section>
 
-        <!-- ── OPERATIONAL REPORTS ── -->
+        <!-- ── 4. OPERATIONAL REPORTS VIEW ── -->
         <section id="view-reports" class="view hidden">
           <div class="card-row">
             <div class="card" style="flex:1">
-              <div class="card-header"><h3>Operational Insights</h3></div>
-              <div id="insights-panel" class="insights-panel">
-                <div class="empty-state">Load insights from the warehouse reports.</div>
+              <div class="card-header">
+                <h3>Operational Insights</h3>
               </div>
-              <button id="load-insights-btn" class="btn btn-secondary btn-sm mt-2">Load Insights</button>
+              <div id="insights-panel" class="insights-panel">
+                <div class="empty-state text-muted">Retrieve automated insights from operational logs.</div>
+              </div>
+              <button id="load-insights-btn" class="btn btn-secondary btn-sm mt-3">Load Insights</button>
             </div>
             <div class="card" style="flex:2">
               <div class="card-header">
-                <h3>Operational Reports</h3>
+                <h3>Operational Incident Reports</h3>
                 <button id="new-report-btn" class="btn btn-primary btn-sm">+ New Report</button>
               </div>
               <div id="reports-list" class="table-container">
-                <div class="empty-state">No reports yet.</div>
+                <div class="empty-state text-muted">No operational reports logged.</div>
               </div>
             </div>
           </div>
 
-          <!-- New report modal -->
+          <!-- New Report Modal -->
           <div id="report-modal" class="modal hidden">
             <div class="modal-backdrop"></div>
             <div class="modal-card">
               <div class="modal-header">
                 <h3>Create Operational Report</h3>
-                <button id="close-report-modal" class="btn btn-ghost">✕</button>
+                <button id="close-report-modal" class="btn btn-ghost btn-sm" aria-label="Close modal">✕</button>
               </div>
               <form id="report-form">
                 <div class="form-group">
-                  <label>Title</label>
-                  <input type="text" id="report-title" placeholder="Report title" required />
+                  <label for="report-title">Title</label>
+                  <input type="text" id="report-title" placeholder="Incident or status title" required />
                 </div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label>Category</label>
+                    <label for="report-category">Category</label>
                     <select id="report-category">
                       <option>GENERAL</option>
                       <option>CONGESTION</option>
@@ -329,7 +534,7 @@
                     </select>
                   </div>
                   <div class="form-group">
-                    <label>Severity</label>
+                    <label for="report-severity">Severity</label>
                     <select id="report-severity">
                       <option>LOW</option>
                       <option>MEDIUM</option>
@@ -339,204 +544,219 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Content</label>
-                  <textarea id="report-content" rows="5" placeholder="Describe the issue…" required></textarea>
+                  <label for="report-content">Description</label>
+                  <textarea id="report-content" rows="4" placeholder="Detail observed conditions, affected aisle/rack, or maintenance requirements…" required></textarea>
                 </div>
                 <div class="modal-actions">
-                  <button type="button" id="cancel-report" class="btn btn-ghost">Cancel</button>
-                  <button type="submit" class="btn btn-primary">Submit Report</button>
+                  <button type="button" id="cancel-report" class="btn btn-secondary btn-sm">Cancel</button>
+                  <button type="submit" class="btn btn-primary btn-sm">Submit Report</button>
                 </div>
               </form>
             </div>
           </div>
         </section>
 
-        <!-- ── UPLOAD (admin only) ── -->
+        <!-- ── 5. UPLOAD DATA VIEW ── -->
         <section id="view-upload" class="view hidden">
           <div class="card-row">
             <div class="card" style="flex:1">
-              <div class="card-header"><h3>Upload Dataset</h3></div>
+              <div class="card-header"><h3>Upload Warehouse Dataset</h3></div>
               <form id="upload-form">
                 <div class="form-group">
-                  <label>Warehouse</label>
+                  <label for="upload-warehouse">Target Warehouse</label>
                   <select id="upload-warehouse" class="select-input" required></select>
                 </div>
                 <div class="form-group">
-                  <label>CSV File</label>
+                  <label>Dataset File (CSV)</label>
                   <div class="file-drop-zone" id="file-drop-zone">
-                    <div class="drop-icon">📂</div>
-                    <p>Drag & drop or <label for="file-input" class="file-label">browse</label></p>
+                    <div class="drop-icon">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>
+                      </svg>
+                    </div>
+                    <p class="text-secondary">Drag &amp; drop or <label for="file-input" class="file-label">browse</label></p>
                     <input type="file" id="file-input" accept=".csv" class="hidden" />
-                    <p class="file-hint">CSV only, max 50MB</p>
+                    <p class="file-hint">CSV tabular format, max 50MB</p>
                     <div id="selected-file-name" class="selected-file hidden"></div>
                   </div>
                 </div>
                 <div id="upload-error" class="alert alert-error hidden"></div>
                 <div id="upload-success" class="alert alert-success hidden"></div>
-                <button type="submit" id="upload-btn" class="btn btn-primary btn-full" disabled>
-                  <span id="upload-btn-text">Select a file to upload</span>
+                <button type="submit" id="upload-btn" class="btn btn-primary btn-full mt-2" disabled>
+                  <span id="upload-btn-text">Select a CSV file to upload</span>
                   <span id="upload-spinner" class="spinner hidden"></span>
                 </button>
               </form>
 
-              <div class="card-header mt-4"><h3>Run Analysis</h3></div>
+              <div class="card-header mt-4"><h3>Execute Analysis</h3></div>
               <div class="form-group">
-                <label>Dataset</label>
+                <label for="analysis-dataset-select">Select Stored Dataset</label>
                 <select id="analysis-dataset-select" class="select-input">
                   <option value="">Select dataset…</option>
                 </select>
               </div>
-              <button id="run-analysis-btn" class="btn btn-primary btn-full">
-                <span id="run-analysis-text">▶ Run Analysis</span>
+              <button id="run-analysis-btn" class="btn btn-secondary btn-full">
+                <span id="run-analysis-text">Run Utilization Analysis</span>
                 <span id="run-spinner" class="spinner hidden"></span>
               </button>
               <div id="analysis-result" class="alert hidden mt-2"></div>
             </div>
 
             <div class="card" style="flex:1">
-              <div class="card-header"><h3>Dataset Format</h3></div>
-              <p class="text-muted">Required CSV columns:</p>
+              <div class="card-header"><h3>Dataset Format Specification</h3></div>
+              <p class="text-muted">Required CSV schema columns:</p>
               <div class="code-block">slot_id, warehouse_id, zone, row, column, status</div>
-              <p class="text-muted mt-2">Optional columns:</p>
+              <p class="text-muted mt-3">Optional metadata columns:</p>
               <div class="code-block">capacity, occupancy, last_updated, blocked_reason</div>
-              <p class="text-muted mt-2">Valid status values:</p>
+              <p class="text-muted mt-3">Permitted slot status values:</p>
               <div class="status-pills">
                 <span class="badge-status occupied">OCCUPIED</span>
                 <span class="badge-status empty">EMPTY</span>
                 <span class="badge-status reserved">RESERVED</span>
                 <span class="badge-status blocked">BLOCKED</span>
               </div>
-              <div class="card-header mt-4"><h3>Uploaded Datasets</h3></div>
+              <div class="card-header mt-4"><h3>Registered Datasets</h3></div>
               <div id="datasets-table" class="table-container"></div>
             </div>
           </div>
         </section>
 
-        <!-- ── ADMIN ── -->
+        <!-- ── 6. ADMIN VIEW ── -->
         <section id="view-admin" class="view hidden">
           <div class="card-row">
             <div class="card" style="flex:1">
-              <div class="card-header"><h3>Warehouse Management</h3></div>
+              <div class="card-header"><h3>Warehouse Infrastructure</h3></div>
               <form id="create-warehouse-form">
                 <div class="form-group">
-                  <label>Warehouse ID</label>
+                  <label for="wh-id">Warehouse Identifier</label>
                   <input type="text" id="wh-id" placeholder="e.g. WH-001" required />
                 </div>
                 <div class="form-group">
-                  <label>Name</label>
+                  <label for="wh-name">Facility Name</label>
                   <input type="text" id="wh-name" placeholder="Main Distribution Center" required />
                 </div>
                 <div class="form-group">
-                  <label>Location</label>
-                  <input type="text" id="wh-location" placeholder="City, Country" />
+                  <label for="wh-location">Location</label>
+                  <input type="text" id="wh-location" placeholder="City, Region" />
                 </div>
-                <button type="submit" class="btn btn-primary">Create Warehouse</button>
+                <button type="submit" class="btn btn-primary btn-sm">Register Warehouse</button>
               </form>
               <div id="wh-create-msg" class="alert hidden mt-2"></div>
-              <div id="warehouses-admin-list" class="table-container mt-2"></div>
+              <div id="warehouses-admin-list" class="table-container mt-3"></div>
             </div>
 
             <div class="card" style="flex:1">
-              <div class="card-header"><h3>User Management</h3></div>
+              <div class="card-header"><h3>Access &amp; User Directory</h3></div>
               <form id="create-user-form">
                 <div class="form-group">
-                  <label>Username</label>
-                  <input type="text" id="new-username" placeholder="username" required />
+                  <label for="new-username">Username</label>
+                  <input type="text" id="new-username" placeholder="manager_user" required />
                 </div>
                 <div class="form-group">
-                  <label>Email</label>
-                  <input type="email" id="new-email" placeholder="user@company.com" required />
+                  <label for="new-email">Email Address</label>
+                  <input type="email" id="new-email" placeholder="user@logistics.corp" required />
                 </div>
                 <div class="form-group">
-                  <label>Password</label>
+                  <label for="new-password">Initial Password</label>
                   <input type="password" id="new-password" placeholder="Min 8 characters" required />
                 </div>
                 <div class="form-group">
-                  <label>Role</label>
+                  <label for="new-role">Role Authorization</label>
                   <select id="new-role">
                     <option value="WAREHOUSE_MANAGER">Warehouse Manager</option>
-                    <option value="ADMIN">Admin</option>
+                    <option value="ADMIN">System Administrator</option>
                   </select>
                 </div>
-                <button type="submit" class="btn btn-primary">Create User</button>
+                <button type="submit" class="btn btn-primary btn-sm">Provision User</button>
               </form>
               <div id="user-create-msg" class="alert hidden mt-2"></div>
-              <div id="users-list" class="table-container mt-2"></div>
+              <div id="users-list" class="table-container mt-3"></div>
             </div>
           </div>
         </section>
 
-        <!-- ── MONITORING ── -->
+        <!-- ── 7. MONITORING VIEW ── -->
         <section id="view-monitoring" class="view hidden">
           <div class="kpi-grid">
             <div class="kpi-card">
-              <div class="kpi-icon">⏱</div>
-              <div class="kpi-value" id="mon-uptime">—</div>
-              <div class="kpi-label">Uptime (sec)</div>
+              <span class="kpi-label">Database</span>
+              <span class="kpi-value" id="mon-db" style="font-size:1.1rem">&mdash;</span>
+              <span class="kpi-sub">Azure SQL Service</span>
             </div>
             <div class="kpi-card">
-              <div class="kpi-icon">🗄</div>
-              <div class="kpi-value" id="mon-db">—</div>
-              <div class="kpi-label">Database</div>
+              <span class="kpi-label">Storage</span>
+              <span class="kpi-value" id="mon-storage" style="font-size:1.1rem">&mdash;</span>
+              <span class="kpi-sub">Azure Blob Containers</span>
             </div>
             <div class="kpi-card">
-              <div class="kpi-icon">☁</div>
-              <div class="kpi-value" id="mon-storage">—</div>
-              <div class="kpi-label">Storage</div>
+              <span class="kpi-label">Telemetry</span>
+              <span class="kpi-value" id="mon-insights-active" style="font-size:1.1rem;color:var(--status-empty)">Active</span>
+              <span class="kpi-sub">Application Insights</span>
             </div>
             <div class="kpi-card">
-              <div class="kpi-icon">📊</div>
-              <div class="kpi-value" id="mon-runs">—</div>
-              <div class="kpi-label">Analysis Runs</div>
+              <span class="kpi-label">Analysis Runs</span>
+              <span class="kpi-value" id="mon-runs">&mdash;</span>
+              <span class="kpi-sub">Historical pipeline runs</span>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Process Uptime</span>
+              <span class="kpi-value" id="mon-uptime" style="font-size:1.1rem">&mdash;</span>
+              <span class="kpi-sub">Server runtime</span>
             </div>
           </div>
 
           <div class="card-row">
             <div class="card" style="flex:1">
-              <div class="card-header"><h3>System Metrics</h3><button id="refresh-metrics-btn" class="btn btn-sm btn-secondary">Refresh</button></div>
+              <div class="card-header">
+                <h3>Telemetry &amp; Node Status</h3>
+                <button id="refresh-metrics-btn" class="btn btn-secondary btn-sm">Refresh</button>
+              </div>
               <div id="metrics-panel" class="metrics-panel"></div>
             </div>
             <div class="card" style="flex:1">
-              <div class="card-header"><h3>Dataset Summary</h3></div>
+              <div class="card-header"><h3>Storage Repository Telemetry</h3></div>
               <div id="dataset-metrics" class="metrics-panel"></div>
             </div>
           </div>
 
+          <!-- Architecture Diagram -->
           <div class="card">
-            <div class="card-header"><h3>Azure Cloud Architecture</h3></div>
+            <div class="card-header">
+              <h3>Enterprise Cloud System Topology</h3>
+            </div>
             <div class="arch-diagram">
               <div class="arch-row">
-                <div class="arch-box user-box">👤 User / Browser</div>
+                <div class="arch-box">User / Browser Client<br><small>SlotWise Single Page Application</small></div>
               </div>
-              <div class="arch-arrow">↓ HTTPS</div>
+              <div class="arch-arrow">&darr; HTTPS / TLS 1.3</div>
               <div class="arch-row">
-                <div class="arch-box frontend-box">🖥 Frontend (Static HTML/CSS/JS)</div>
+                <div class="arch-box">Frontend Layer<br><small>Static UI (HTML, Vanilla CSS, JS)</small></div>
               </div>
-              <div class="arch-arrow">↓ REST API</div>
+              <div class="arch-arrow">&darr; REST API</div>
               <div class="arch-row">
-                <div class="arch-box backend-box">⚙ Azure App Service<br/><small>FastAPI Backend</small></div>
-                <div class="arch-connector">←→</div>
-                <div class="arch-box monitor-box">📡 Azure Monitor<br/><small>App Insights</small></div>
+                <div class="arch-box">Azure App Service<br><small>FastAPI Backend Engine (Python 3.13)</small></div>
+                <div class="arch-connector">&larr;&rarr;</div>
+                <div class="arch-box">Azure Monitor / Application Insights<br><small>opencensus-ext-azure Telemetry</small></div>
               </div>
-              <div class="arch-arrow">↓ Auth/JWT</div>
+              <div class="arch-arrow">&darr; Bearer Token Validation</div>
               <div class="arch-row">
-                <div class="arch-box auth-box">🔐 Authentication &amp; RBAC<br/><small>JWT + bcrypt</small></div>
+                <div class="arch-box">Authentication &amp; RBAC<br><small>JWT (HS256) &bull; bcrypt Passwords</small></div>
               </div>
-              <div class="arch-arrow">↓ Write/Read</div>
+              <div class="arch-arrow">&darr; Storage / ORM Pipelines</div>
               <div class="arch-row">
-                <div class="arch-box storage-box">☁ Azure Blob Storage<br/><small>CSV Datasets</small></div>
-                <div class="arch-connector">←→</div>
-                <div class="arch-box db-box">🗄 Azure SQL Database<br/><small>Slots, Analysis, Users</small></div>
+                <div class="arch-box">Azure Blob Storage<br><small>CSV Datasets (warehouse-data)</small></div>
+                <div class="arch-connector">&larr;&rarr;</div>
+                <div class="arch-box">Azure SQL Database<br><small>Slots, AnalysisRuns, Reports, Users</small></div>
               </div>
-              <div class="arch-arrow">↓ ML Inference</div>
+              <div class="arch-arrow">&darr; Predictive Pipelines</div>
               <div class="arch-row">
-                <div class="arch-box ml-box">🤖 ML Forecast<br/><small>scikit-learn LinearRegression</small></div>
-                <div class="arch-connector">←→</div>
-                <div class="arch-box logic-box">⚡ Azure Logic Apps<br/><small>Automated Triggers</small></div>
+                <div class="arch-box">Local Forecasting<br><small>ExponentialHeuristic / Local ML</small></div>
+                <div class="arch-connector">&larr;&rarr;</div>
+                <div class="arch-box">Azure Logic Apps<br><small>Scheduled Operations &amp; Alerts</small></div>
               </div>
-              <div class="arch-arrow">↓</div>
+              <div class="arch-arrow">&darr; Telemetry Render</div>
               <div class="arch-row">
-                <div class="arch-box dash-box">📊 Dashboard &amp; Analytics</div>
+                <div class="arch-box">Dashboard &amp; 2D Digital Twin<br><small>Real-Time Capacity Analytics</small></div>
               </div>
             </div>
           </div>
@@ -546,7 +766,7 @@
     </main>
   </div><!-- /app-page -->
 
-  <!-- Toast notification -->
+  <!-- Toast Notification -->
   <div id="toast" class="toast hidden"></div>
 
   <script src="/static/js/api.js"></script>

@@ -21,6 +21,7 @@ const App = {
     this._bindNavigation();
     this._bindWarehouseSelector();
     this._bindSidebarToggle();
+    if (typeof Grid !== 'undefined' && Grid.init) Grid.init();
 
     // Try restore session
     if (Auth.restoreSession()) {
@@ -141,11 +142,15 @@ const App = {
     if (navBtn) navBtn.classList.add('active');
 
     const titles = {
-      dashboard: 'Dashboard', grid: 'Warehouse Grid', forecast: 'AI Forecast',
-      reports: 'Operational Reports', upload: 'Upload Dataset', admin: 'Admin Panel',
-      monitoring: 'Monitoring',
+      dashboard: 'Dashboard',
+      grid: 'Live 2D Digital Twin',
+      forecast: 'Utilization Forecast',
+      reports: 'Operational Reports',
+      upload: 'Upload Dataset',
+      admin: 'System Administration',
+      monitoring: 'System Telemetry & Architecture',
     };
-    document.getElementById('page-title').textContent = titles[view] || 'WarehouseAI';
+    document.getElementById('page-title').textContent = titles[view] || 'SlotWise';
 
     // Load view data
     const whId = this.currentWarehouseId;

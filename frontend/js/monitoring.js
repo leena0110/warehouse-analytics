@@ -17,30 +17,36 @@ const Monitoring = {
     document.getElementById('mon-storage').textContent = m.azure_storage_active ? 'Azure Blob' : 'Local Fallback';
     document.getElementById('mon-runs').textContent = m.counts.analysis_runs;
 
+    const insEl = document.getElementById('mon-insights-active');
+    if (insEl) {
+      insEl.textContent = m.appinsights_active ? 'Active' : 'Inactive';
+      insEl.style.color = m.appinsights_active ? 'var(--status-empty)' : 'var(--text-muted)';
+    }
+
     // Metrics panel
     const metricsEl = document.getElementById('metrics-panel');
     metricsEl.innerHTML = `
-      <div class="metric-row"><span>Environment</span><span class="badge">${m.environment}</span></div>
-      <div class="metric-row"><span>Database</span><span>${m.database_type}</span></div>
-      <div class="metric-row"><span>Azure Storage Active</span><span style="color:${m.azure_storage_active ? 'var(--green)' : 'var(--yellow)'}">${m.azure_storage_active ? 'Yes' : 'No (local fallback)'}</span></div>
-      <div class="metric-row"><span>App Insights Active</span><span style="color:${m.appinsights_active ? 'var(--green)' : 'var(--yellow)'}">${m.appinsights_active ? 'Yes' : 'No'}</span></div>
-      <div class="metric-row"><span>Python Version</span><span>${m.server.python}</span></div>
-      <div class="metric-row"><span>Server OS</span><span>${m.server.os}</span></div>
+      <div class="metric-row"><span>Deployment Environment</span><span class="badge">${m.environment}</span></div>
+      <div class="metric-row"><span>Database Engine</span><span>${m.database_type}</span></div>
+      <div class="metric-row"><span>Azure Blob Storage</span><span style="color:${m.azure_storage_active ? 'var(--status-empty)' : 'var(--status-reserved)'}">${m.azure_storage_active ? 'Connected (warehouse-data)' : 'Local File Fallback'}</span></div>
+      <div class="metric-row"><span>Azure Application Insights</span><span style="color:${m.appinsights_active ? 'var(--status-empty)' : 'var(--text-muted)'}">${m.appinsights_active ? 'Active Telemetry' : 'Standby / Local Logs'}</span></div>
+      <div class="metric-row"><span>Python Runtime</span><span>${m.server.python}</span></div>
+      <div class="metric-row"><span>Host OS</span><span>${m.server.os}</span></div>
       ${m.latest_analysis ? `
-        <div class="metric-row"><span>Latest Analysis</span><span>${new Date(m.latest_analysis.run_at).toLocaleString()}</span></div>
-        <div class="metric-row"><span>Latest Utilization</span><span>${m.latest_analysis.utilization_pct}%</span></div>
-        <div class="metric-row"><span>Latest Risk</span><span class="risk-${m.latest_analysis.risk_level}">${m.latest_analysis.risk_level}</span></div>
+        <div class="metric-row"><span>Latest Analysis Run</span><span>${new Date(m.latest_analysis.run_at).toLocaleString()}</span></div>
+        <div class="metric-row"><span>Latest Utilization</span><span class="mono">${m.latest_analysis.utilization_pct}%</span></div>
+        <div class="metric-row"><span>Assessed Risk Level</span><span class="risk-${m.latest_analysis.risk_level}">${m.latest_analysis.risk_level}</span></div>
       ` : ''}
     `;
 
     // Dataset metrics
     const dsEl = document.getElementById('dataset-metrics');
     dsEl.innerHTML = `
-      <div class="metric-row"><span>Total Warehouses</span><span>${m.counts.warehouses}</span></div>
+      <div class="metric-row"><span>Registered Facilities</span><span>${m.counts.warehouses}</span></div>
       <div class="metric-row"><span>Total Datasets</span><span>${m.counts.datasets}</span></div>
-      <div class="metric-row"><span>Processed</span><span style="color:var(--green)">${m.counts.datasets_processed}</span></div>
-      <div class="metric-row"><span>Failed</span><span style="color:${m.counts.datasets_failed > 0 ? 'var(--red)' : 'var(--text-secondary)'}">${m.counts.datasets_failed}</span></div>
-      <div class="metric-row"><span>Analysis Runs</span><span>${m.counts.analysis_runs}</span></div>
+      <div class="metric-row"><span>Processed Datasets</span><span style="color:var(--status-empty)">${m.counts.datasets_processed}</span></div>
+      <div class="metric-row"><span>Failed Uploads</span><span style="color:${m.counts.datasets_failed > 0 ? 'var(--status-occupied)' : 'var(--text-secondary)'}">${m.counts.datasets_failed}</span></div>
+      <div class="metric-row"><span>Completed Analysis Pipelines</span><span>${m.counts.analysis_runs}</span></div>
     `;
   },
 };

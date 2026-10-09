@@ -22,7 +22,7 @@ const Reports = {
         return;
       }
 
-      const sevBadge = { LOW: '#22C55E', MEDIUM: '#EAB308', HIGH: '#F97316', CRITICAL: '#EF4444' };
+      const sevBadge = { LOW: '#2E7D32', MEDIUM: '#D97706', HIGH: '#DC3545', CRITICAL: '#991B1B' };
 
       el.innerHTML = `
         <table>
